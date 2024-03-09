@@ -11,9 +11,13 @@ class User(db.Model):
     name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(120), nullable=False)
 
+def create_app():
+    with app.app_context():
+        db.create_all()
+
 @app.route('/')
 def index():
-    with app.app_context():  # Create an application context
+    with app.app_context():
         users = User.query.all()
     return render_template('index.html', users=users)
 
@@ -27,7 +31,7 @@ def submit():
         name = request.form['name']
         email = request.form['email']
 
-        with app.app_context():  # Create an application context
+        with app.app_context():
             new_user = User(name=name, email=email)
             db.session.add(new_user)
             db.session.commit()
@@ -36,13 +40,13 @@ def submit():
 
 @app.route('/users')
 def show_users():
-    with app.app_context():  # Create an application context
+    with app.app_context():
         users = User.query.all()
     return render_template('users.html', users=users)
 
 @app.route('/delete/<int:user_id>')
 def delete_user(user_id):
-    with app.app_context():  # Create an application context
+    with app.app_context():
         user = User.query.get(user_id)
         if user:
             db.session.delete(user)
@@ -53,7 +57,7 @@ def delete_user(user_id):
 def delete_users():
     if 'delete_user' in request.form:
         user_id = int(request.form['delete_user'])
-        with app.app_context():  # Create an application context
+        with app.app_context():
             user = User.query.get(user_id)
             if user:
                 db.session.delete(user)
@@ -61,6 +65,5 @@ def delete_users():
     return redirect(url_for('show_users'))
 
 if __name__ == '__main__':
-    with app.app_context():  # Create an application context
-        db.create_all()
+    create_app()
     app.run(host='0.0.0.0', port=5000, debug=True)
