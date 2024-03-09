@@ -1,6 +1,8 @@
 # app.py
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import OperationalError
+import time
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@db:5432/mydatabase'
@@ -11,10 +13,21 @@ class User(db.Model):
     name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(120), nullable=False)
 
-# Create the application context
-with app.app_context():
-    # Initialize the database tables
-    db.create_all()
+def create_app():
+    retries = 5
+    while retries > 0:
+        try:
+            with app.app_context():
+                db.create_all()
+            break
+        except OperationalError as e:
+            print(f"Error connecting to the database: {e}")
+            retries -= 1
+            time.sleep(2)
+    
+    if retries == 0:
+        print("Failed to connect to the database. Exiting.")
+        exit(1)
 
 @app.route('/')
 def index():
@@ -64,4 +77,5 @@ def delete_users():
     return redirect(url_for('show_users'))
 
 if __name__ == '__main__':
+    create_app()
     app.run(host='0.0.0.0', port=5000, debug=True)
