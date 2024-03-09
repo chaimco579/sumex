@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
@@ -11,15 +10,16 @@ class User(db.Model):
     name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(120), nullable=False)
 
-def create_app():
-    with app.app_context():
-        db.create_all()
+# Create the application context
+with app.app_context():
+    # Initialize the database tables
+    db.create_all()
 
 @app.route('/')
 def index():
-    with app.app_context():
-        users = User.query.all()
+    users = User.query.all()
     return render_template('index.html', users=users)
+    
 
 @app.route('/hello/<name>')
 def hello(name):
