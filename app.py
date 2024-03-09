@@ -1,3 +1,4 @@
+# app.py
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
@@ -19,7 +20,6 @@ with app.app_context():
 def index():
     users = User.query.all()
     return render_template('index.html', users=users)
-    
 
 @app.route('/hello/<name>')
 def hello(name):
@@ -40,8 +40,7 @@ def submit():
 
 @app.route('/users')
 def show_users():
-    with app.app_context():
-        users = User.query.all()
+    users = User.query.all()
     return render_template('users.html', users=users)
 
 @app.route('/delete/<int:user_id>')
@@ -65,5 +64,4 @@ def delete_users():
     return redirect(url_for('show_users'))
 
 if __name__ == '__main__':
-    create_app()
     app.run(host='0.0.0.0', port=5000, debug=True)
