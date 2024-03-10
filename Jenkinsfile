@@ -12,7 +12,7 @@ pipeline {
         stage('docker compose build') {
             steps {
                 dir('sumex') {
-                        sh 'docker-compose up -d --build .'
+                        sh 'docker-compose up -d'
                     }
                 }
          } 
