@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('git clone') {
             steps {
+                sh 'docker-compose down'
                 deleteDir()
                 sh 'echo cloning project...'
                 sh 'git clone https://github.com/chaimco579/sumex.git'
