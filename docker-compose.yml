@@ -2,8 +2,7 @@ version: '3'
 
 services:
   app:
-    build:
-      context: .
+    image: chaimco/sumex:latest
     ports:
       - "5000:5000"
     depends_on:
@@ -13,7 +12,6 @@ services:
     volumes:
       - app-data:/app
     container_name: pini-flask-app
-    image: pini-flask-image
 
   db:
     image: postgres
@@ -26,7 +24,6 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     container_name: pini-postgres-container
-    image: pini-postgres-image
 
 volumes:
   app-data:
